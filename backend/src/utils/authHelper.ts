@@ -68,9 +68,10 @@ export class AuthHelper {
             if (!jwt || !jwt.header) {
                 return reject("No JWT token provided to get signing key");
             }
-
-            client.getSigningKey(jwt.header.kid, (err: Error, key: jwksClient.SigningKey) => {
+            const kid = 'AbXgohSsfItTfr5CTUYNn';
+            client.getSigningKey(kid, (err: Error, key: jwksClient.SigningKey) => {
                 if (err) {
+                    //throw new Error('kid '+kid+' key:'+key);
                     return reject(err);
                 }
 
