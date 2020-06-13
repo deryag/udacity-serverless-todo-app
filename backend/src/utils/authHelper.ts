@@ -50,7 +50,7 @@ export class AuthHelper {
         return verify(
             token,
             secretOrPublicKey,
-            { algorithms: ['RS256'] }
+            { algorithms: ['HS256'] }
         ) as JwtPayload;
     }
 
