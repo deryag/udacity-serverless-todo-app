@@ -1,16 +1,16 @@
 import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { CreateTodoRequest } from '../../interfaces/requests';
 import { createTodo } from '../../businessLogic/todos';
 import * as middy from "middy";
 import { cors } from "middy/middlewares";
 import { createLogger } from '../../utils/logger';
+import { CreateTodoRequest } from '../../requests/CreateTodoRequest';
 
 const logger = createLogger('createTodo');
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    logger.info('Processing event:', event);
+    logger.info('processing event :', event);
 
     const newTodo: CreateTodoRequest = JSON.parse(event.body);
     const newItem = await createTodo(newTodo, event);
@@ -22,7 +22,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       })
     };
   } catch (error) {
-    logger.error("createTodo", error);
+    logger.error("createTodo error : ", error);
     return {
       statusCode: 500,
       body: JSON.stringify({

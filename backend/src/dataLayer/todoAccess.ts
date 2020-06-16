@@ -1,10 +1,11 @@
 import * as AWS from "aws-sdk";
 const AWSXray = require('aws-xray-sdk');
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import { TodoItem, TodoUpdate } from "../interfaces/models";
 import { config } from "../common";
-import { UpdateTodoRequest } from "../interfaces/requests";
 import { createLogger } from "../utils/logger";
+import { TodoItem } from "../models/TodoItem";
+import { TodoUpdate } from "../models/TodoUpdate";
+import { UpdateTodoRequest } from "../requests/UpdateTodoRequest";
 
 const XAWS = AWSXray.captureAWS(AWS);
 const logger = createLogger('todoAccess');
@@ -18,7 +19,7 @@ export class TodoAccess {
 
     async getTodoItem(todoId: string): Promise<TodoItem> {
         try {
-            logger.info(`Getting todo with id ${todoId}`);
+            logger.info(`getTodoItem with id : ${todoId}`);
 
             const params: DocumentClient.QueryInput = {
                 IndexName: this.todosTableIndexName,
@@ -43,7 +44,7 @@ export class TodoAccess {
 
     async getTodo(todoId: string, userId: string): Promise<TodoItem> {
         try {
-            logger.info(`Getting todo with id ${todoId}`);
+            logger.info(`getTodo with id : ${todoId}`);
 
             const params: DocumentClient.QueryInput = {
                 TableName: this.todosTable,
@@ -68,7 +69,7 @@ export class TodoAccess {
 
     async getAllTodos(): Promise<TodoItem[]> {
         try {
-            logger.info("Getting all todos");
+            logger.info("getAllTodos");
 
             const result = await this.docClient.scan({
                 TableName: this.todosTable
@@ -82,7 +83,7 @@ export class TodoAccess {
 
     async getAllTodosByUser(userId: string): Promise<TodoItem[]> {
         try {
-            logger.info(`Getting all todos with userId ${userId}`);
+            logger.info(`getAllTodosByUser userId : ${userId}`);
 
             const params: DocumentClient.QueryInput = {
                 TableName: this.todosTable,
@@ -101,7 +102,7 @@ export class TodoAccess {
 
     async createTodo(todo: TodoItem): Promise<TodoItem> {
         try {
-            logger.info("Creating a new todo", todo);
+            logger.info("createTodo", todo);
 
             const params: DocumentClient.PutItemInput = {
                 TableName: this.todosTable,
@@ -117,7 +118,7 @@ export class TodoAccess {
 
     async updateAttachmentUrl(todoId: string, userId: string, attachmentUrl: string): Promise<void> {
         try {
-            logger.info(`Updating attachment url of the todo: ${todoId}`);
+            logger.info(`updateAttachmentUrl : ${todoId}`);
 
             const params: DocumentClient.UpdateItemInput = {
                 TableName: this.todosTable,
@@ -143,7 +144,7 @@ export class TodoAccess {
 
     async updateTodo(todoId: string, userId: string, item: UpdateTodoRequest): Promise<TodoUpdate> {
         try {
-            logger.info(`Updating todo with id: ${todoId}`);
+            logger.info(`updateTodo with id: ${todoId}`);
 
             const params: DocumentClient.UpdateItemInput = {
                 TableName: this.todosTable,
@@ -174,7 +175,7 @@ export class TodoAccess {
 
     async deleteTodo(todoId: string, userId: string): Promise<void> {
         try {
-            logger.info(`Deleting todo with id: ${todoId}`);
+            logger.info(`deleteTodo with id: ${todoId}`);
 
             const params: DocumentClient.DeleteItemInput = {
                 TableName: this.todosTable,
@@ -194,7 +195,7 @@ export class TodoAccess {
 
 const createDynamoDBClient = () => {
     if (config.isOffline) {
-        logger.info("Creating a local DynamoDB instance");
+        logger.info("createDynamoDBClient locally");
         return new XAWS.DynamoDB.DocumentClient({
             region: "localhost",
             endpoint: "http://localhost:8000"

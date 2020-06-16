@@ -1,19 +1,14 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { verify, decode } from 'jsonwebtoken';
-import { Jwt, JwtPayload } from "../interfaces/auth";
 import * as jwksClient from "jwks-rsa";
 import { config } from '../common';
+import { JwtPayload } from "../auth/JwtPayload";
+import { Jwt } from "../auth/Jwt";
 
 const client = jwksClient({ jwksUri: config.auth0JWKSUrl });
 
 export class AuthHelper {
-    /**
-    * Get a user id from an API Gateway event or JWT token
-    * @param event an event from API Gateway
-    * @param jwtToken JWT token
-    *
-    * @returns a user id from a JWT token
-    */
+
     static getUserId(jwtToken: string): string;
     static getUserId(event: APIGatewayProxyEvent): string;
     static getUserId(param: string | APIGatewayProxyEvent): string {
@@ -50,7 +45,7 @@ export class AuthHelper {
         return verify(
             token,
             secretOrPublicKey,
-            { algorithms: ['HS256'] }
+            { algorithms: ['RS256'] }
         ) as JwtPayload;
     }
 
@@ -82,12 +77,12 @@ export class AuthHelper {
 
     private static parseJWTToken(header: string): string {
         if (!header.toLowerCase().startsWith('bearer '))
-            throw new Error('Invalid authorization header');
+            throw new Error('Invalid authorization header : header.toLowerCase()');
 
         const split = header.split(' ');
 
         if (split.length !== 2) {
-            throw new Error("Invalid authorization header");
+            throw new Error("Invalid authorization header ::"+ header.toLowerCase() + ' length: '+ split.length);
         }
         return split[1];
     }

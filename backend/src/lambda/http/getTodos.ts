@@ -9,7 +9,7 @@ const logger = createLogger('getTodos');
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    logger.info("Processing event", event);
+    logger.info("processing event : ", event);
     const todos = await getAllTodosByUser(event);
 
     return {
@@ -19,7 +19,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       })
     };
   } catch (error) {
-    logger.error("getTodos", error);
+    logger.error("getTodos : ", error);
     return {
       statusCode: 500,
       body: JSON.stringify({

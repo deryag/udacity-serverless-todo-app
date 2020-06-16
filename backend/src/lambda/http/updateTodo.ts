@@ -3,21 +3,21 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from "middy";
 import { cors } from "middy/middlewares";
 import { updateTodo, getTodo } from '../../businessLogic/todos';
-import { UpdateTodoRequest } from '../../interfaces/requests';
 import { createLogger } from '../../utils/logger';
+import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest';
 
 const logger = createLogger('updateTodo');
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    logger.info("Processing event", event);
+    logger.info("processing event : ", event);
     const todoId = event.pathParameters.todoId;
     const updatedTodo: UpdateTodoRequest = JSON.parse(event.body);
     const todoItem = await getTodo(todoId, event);
 
     if (!todoItem) {
-      const message = "Todo does not exist or you are not authorized to update the todo";
-      logger.warning("updateTodo", message);
+      const message = "authorization failed or todo item does not exist!";
+      logger.warning("updateTodo : ", message);
       return {
         statusCode: 404,
         body: JSON.stringify({
@@ -33,7 +33,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
       body: ""
     };
   } catch (error) {
-    logger.error("updateTodo", error);
+    logger.error("updateTodo error : ", error);
     return {
       statusCode: 500,
       body: JSON.stringify({

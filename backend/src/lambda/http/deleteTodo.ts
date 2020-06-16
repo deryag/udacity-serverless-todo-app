@@ -9,13 +9,13 @@ const logger = createLogger('deleteTodo');
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    logger.info("Processing event", event);
+    logger.info("processing event", event);
     const todoId = event.pathParameters.todoId;
 
     const todoItem = await getTodo(todoId, event);
 
     if (!todoItem) {
-      const message = "Todo does not exist or you are not authorized to delete the todo";
+      const message = "authorization failed or todo item does not exist!";
       logger.warning("deleteTodo", message);
       return {
         statusCode: 404,
@@ -34,7 +34,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     };
   }
   catch (error) {
-    logger.error("deleteTodo", error);
+    logger.error("deleteTodo error : ", error);
     return {
       statusCode: 500,
       body: JSON.stringify({

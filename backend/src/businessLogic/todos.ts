@@ -1,11 +1,12 @@
 import * as uuid from "uuid";
-import { CreateTodoRequest } from "../interfaces/requests";
-import { TodoItem, TodoUpdate } from "../interfaces/models";
 import { TodoAccess } from "../dataLayer/todoAccess";
 import { S3Helper } from "../utils/s3Helper";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { AuthHelper } from "../utils/authHelper";
-import { UpdateTodoRequest } from "../interfaces/requests";
+import { TodoItem } from "../models/TodoItem";
+import { TodoUpdate } from "../models/TodoUpdate";
+import { CreateTodoRequest } from "../requests/CreateTodoRequest";
+import { UpdateTodoRequest } from "../requests/UpdateTodoRequest";
 
 const todoAccess = new TodoAccess();
 const s3Helper = new S3Helper();
