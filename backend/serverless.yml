@@ -91,7 +91,7 @@ functions:
           method: post
           path: todos
           authorizer: Auth
-          #cors: true
+          cors: true
           request: #${file(models/create-todo-request.json)}
             schema:
               'application/json': ${file(models/create-todo-request.json)}
@@ -116,7 +116,7 @@ functions:
           path: todos/{todoId}
           authorizer: Auth
           cors: true
-          equest: #${file(models/create-todo-request.json)}
+          request: #${file(models/create-todo-request.json)}
             schema:
               'application/json': ${file(models/update-todo-request.json)}
     iamRoleStatementsName: ${self:provider.environment.APP_NAME}-update-todo-role-${self:provider.stage}
