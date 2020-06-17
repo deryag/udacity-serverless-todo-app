@@ -71,7 +71,7 @@ export class TodoAccess {
         try {
             logger.info("getAllTodos");
 
-            const result = await this.docClient.scan({
+            const result = await this.docClient.query({
                 TableName: this.todosTable
             }).promise();
 
