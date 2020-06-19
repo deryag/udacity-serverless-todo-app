@@ -4,7 +4,7 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
-
+  - serverless-reqvalidator-plugin
   - serverless-aws-documentation
   - serverless-dynamodb-local
   - serverless-offline
@@ -33,6 +33,14 @@ provider:
  
 custom:
   topicName: todoTopic-${self:provider.stage}
+  documentation:
+    models:
+      - name: CreateTodoRequest
+        contentType: application/json
+        schema: ${file(models/create-todo-request.json)}
+      - name: UpdateTodoRequest
+        contentType: application/json
+        schema: ${file(models/update-todo-request.json)}
   
   serverless-offline:
     port: 3003
@@ -53,7 +61,15 @@ custom:
       info:
         version: v1.0.0
         title: Todos API
-        description: Todo application    
+        description: Todo application 
+    models:
+      - name: CreateTodoRequest
+        contentType: application/json
+        schema: ${file(/models/create-todo-request.json)}
+      - name: UpdateTodoRequest
+        contentType: application/json
+        schema: ${file(/models/update-todo-request.json)}
+        
 
 functions:
   Auth:
@@ -92,9 +108,12 @@ functions:
           path: todos
           authorizer: Auth
           cors: true
-          request: #${file(models/create-todo-request.json)}
-            schema:
-              'application/json': ${file(models/create-todo-request.json)}
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new todo item
+            description: Create a new todo item
+            requestModels:
+              'application/json': CreateTodoRequest
     iamRoleStatementsName: ${self:provider.environment.APP_NAME}-create-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -116,9 +135,12 @@ functions:
           path: todos/{todoId}
           authorizer: Auth
           cors: true
-          request: #${file(models/create-todo-request.json)}
-            schema:
-              'application/json': ${file(models/update-todo-request.json)}
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update Todo Item
+            description: Update a new Todo Item.           
+            requestModels:
+              'application/json': UpdateTodoRequest
     iamRoleStatementsName: ${self:provider.environment.APP_NAME}-update-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
