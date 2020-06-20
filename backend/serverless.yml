@@ -4,13 +4,8 @@ service:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
-  - serverless-reqvalidator-plugin
-  - serverless-aws-documentation
   - serverless-dynamodb-local
   - serverless-offline
-
-package:
-  individually: true
 
 provider:
   tracing:
@@ -33,14 +28,6 @@ provider:
  
 custom:
   topicName: todoTopic-${self:provider.stage}
-  documentation:
-    models:
-      - name: CreateTodoRequest
-        contentType: application/json
-        schema: ${file(models/create-todo-request.json)}
-      - name: UpdateTodoRequest
-        contentType: application/json
-        schema: ${file(models/update-todo-request.json)}
   
   serverless-offline:
     port: 3003
@@ -56,19 +43,6 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
-  documentation:
-    api:
-      info:
-        version: v1.0.0
-        title: Todos API
-        description: Todo application 
-    models:
-      - name: CreateTodoRequest
-        contentType: application/json
-        schema: ${file(/models/create-todo-request.json)}
-      - name: UpdateTodoRequest
-        contentType: application/json
-        schema: ${file(/models/update-todo-request.json)}
         
 
 functions:
@@ -108,12 +82,9 @@ functions:
           path: todos
           authorizer: Auth
           cors: true
-          reqValidatorName: RequestBodyValidator
-          documentation:
-            summary: Create a new todo item
-            description: Create a new todo item
-            requestModels:
-              'application/json': CreateTodoRequest
+          request:
+            schema:
+              application/json: ${file(backend/src/models/create-todo-request.json)}
     iamRoleStatementsName: ${self:provider.environment.APP_NAME}-create-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -136,11 +107,9 @@ functions:
           authorizer: Auth
           cors: true
           reqValidatorName: RequestBodyValidator
-          documentation:
-            summary: Update Todo Item
-            description: Update a new Todo Item.           
-            requestModels:
-              'application/json': UpdateTodoRequest
+          request:
+            schema:
+              application/json: ${file(backend/src/models/update-todo-request.json)}
     iamRoleStatementsName: ${self:provider.environment.APP_NAME}-update-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -269,7 +238,7 @@ resources:
         RestApiId:
           Ref: ApiGatewayRestApi
         ValidateRequestBody: true
-        ValidateRequestParameters: false
+        ValidateRequestParameters: true
 
     TodosDynamoDBTable:
       Type: AWS::DynamoDB::Table
