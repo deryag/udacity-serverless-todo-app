@@ -84,7 +84,7 @@ functions:
           cors: true
           request:
             schema:
-              application/json: ${file(backend/src/models/create-todo-request.json)}
+              application/json: ${file(src/models/create-todo-request.json)}
     iamRoleStatementsName: ${self:provider.environment.APP_NAME}-create-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -109,7 +109,7 @@ functions:
           reqValidatorName: RequestBodyValidator
           request:
             schema:
-              application/json: ${file(backend/src/models/update-todo-request.json)}
+              application/json: ${file(src/models/update-todo-request.json)}
     iamRoleStatementsName: ${self:provider.environment.APP_NAME}-update-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
