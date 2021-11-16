@@ -19,7 +19,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node": "^14.0.5",
     "@types/uuid": "^8.0.0",
-    "aws-sdk": "^2.683.0",
+    "aws-sdk": "^2.814.0",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-dynamodb-local": "^0.2.39",
     "serverless-iam-roles-per-function": "^1.0.4",
